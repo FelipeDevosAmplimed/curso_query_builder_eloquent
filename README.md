@@ -45,9 +45,37 @@ Caso não esteja utilizando o Eloquent será necessário importar a facade DB e 
 
 ## Métodos do Query Builder do Laravel
 
+1. [GET](#get)
+    - ->select()
+    - ->addSelect()
+    - ->first()
+    - ->value()
+    - ->find()
+    - ->pluck()
+2. [INSERT/UPDATE](#insertupdate)
+    - ->insert()
+    - ->insertOrIgnore()
+    - ->insertGetId()
+    - ->upsert()
+    - ->update()
+    - ->updateOrInsert()
+    - ->increment()/->decrement()
+3. [DELETE](#delete)
+    - ->delete()
+    - ->truncate()
+4. [MISC](#misc)
+    - ->count()
+    - ->avg()
+    - ->max()
+    - ->min()
+    - ->whereNot()
+    - ->whereBetween()
+    - ->whereNotBetween()
+    - ->exists()
+    - ->doesntExist()
 ### GET
 
-**_->select()_**
+**_->select()_** <br>
 Busca todos registros e todas as colunas de uma tabela, sendo possível especificar uma ou mais coluna dentro do select().
 
 ```
@@ -58,7 +86,7 @@ Busca todos registros e todas as colunas de uma tabela, sendo possível especifi
    $eventos = DB::table("eventos")->select(['coluna_1', 'coluna_2', 'coluna_3'])->get();
 ```
 
-**_->addSelect()_**
+**_->addSelect()_** <br>
 Adiciona uma nova coluna nos registros buscados anteriormente.
 
 ```
@@ -66,25 +94,33 @@ Adiciona uma nova coluna nos registros buscados anteriormente.
     $eventos->addSelect(['cor', 'local', 'profissional'])->get();
 ```
 
-**_->first()_**
+**_->first()_** <br>
 Busca o primeiro registro que satisfaz a condição.
-`$pac = DB::table("pacientes")->where('Nome', 'Felipe')->first();`
+```
+    $pac = DB::table("pacientes")->where('Nome', 'Felipe')->first();
+```
 
-**_->value()_**
+**_->value()_** <br>
 Busca um único valor na lista de resultados.
-`$profissional = DB::table("eventos")->where('id', 5)->value('profissional');`
+```
+    $profissional = DB::table("eventos")->where('id', 5)->value('profissional');
+```
 
-**_->find()_**
+**_->find()_** <br>
 Busca um único registro pela chave primária.
-`$evento = DB::table("eventos")->find(10);`
+```
+    $evento = DB::table("eventos")->find(10);
+```
 
-**_->pluck()_**
+**_->pluck()_** <br>
 Retorna uma lista de resultados de uma coluna específica.
-`$profissionais = DB::table("eventos")->pluck('profissionais');`
+```
+    $profissionais = DB::table("eventos")->pluck('profissionais');
+```
 
 ### INSERT/UPDATE
 
-**_->insert()_**
+**_->insert()_** <br>
 Adiciona um ou mais registro no banco de dados.
 ```
     DB::table("eventos")->insert([
@@ -107,7 +143,7 @@ Adiciona um ou mais registro no banco de dados.
     ]);
 ```
 
-**_->insertOrIgnore()_**
+**_->insertOrIgnore()_** <br>
 Adiciona um ou mais registro no banco de dados, porém caso alguma chave única ou primária seja duplicada ignora a criação do registro no banco.
 ```
     DB::table("eventos")->insertOrIgnore([
@@ -133,7 +169,7 @@ Adiciona um ou mais registro no banco de dados, porém caso alguma chave única 
 ```
 Num cenário onde chave_unica é uma chave única e eles estão com o mesmo valor, faria a criação da primeira ocorrência e na segunda ignoraria a criação.
 
-**_->insertGetId()_**
+**_->insertGetId()_** <br>
 Adiciona um registro no banco de dados, retornando o ID do registro criado.
 ```
     $novoEvento = DB::table("eventos")->insertGetId([
@@ -149,7 +185,7 @@ Adiciona um registro no banco de dados, retornando o ID do registro criado.
     return $novoEvento;
 ```
 
-**_->upsert()_**
+**_->upsert()_** <br>
 Faz o update de um registro e caso não exista cria o registro  no banco de dados.
 ```
     DB::table("eventos")->upsert([
@@ -164,7 +200,7 @@ Faz o update de um registro e caso não exista cria o registro  no banco de dado
 ```
 Verifica se já existe um registro com o mesmo valor de chave_unica, caso exista faz o update caso não exista cria no banco.
 
-**_->update()_**
+**_->update()_** <br>
 Faz o update de um registro no banco de dados. Para realizar o update necessário utilizar o método `->where()`.
 ```
     DB::table("eventos")->where('id', 3)
@@ -191,7 +227,7 @@ Também é possivel usar o método `->orWhere()` que vai verificar se o registro
     ]);
 ```
 
-**_->updateOrInsert()_**
+**_->updateOrInsert()_** <br>
 Faz o update de um registro no banco de dados caso ele exista se não existir ele cria o registro.
 ```
     DB::table("eventos")->updateOrInsert([
@@ -206,7 +242,7 @@ Faz o update de um registro no banco de dados caso ele exista se não existir el
 ```
 Existe uma diferença entre o updateOrInsert() e o upsert(), o upsert serve para um ou mais registros , o updateOrInsert serve para um registro.
 
-**_->increment()/->decrement()_**
+**_->increment()/->decrement()_** <br>
 Faz o incremento ou decremento de um campo no banco de dados. Para realizar o increment o ou decremento necessário a coluna ser do tipo integer
 ```
     DB::table("pacientes")->where('id', 7)
@@ -222,7 +258,7 @@ também é possível incrementar ou decrementar mais de uma coluna ao mesmo temp
 
 ### DELETE
 
-**_->delete()_**
+**_->delete()_** <br>
 Remove um registro do banco de dados com base nas condições passadas no `->where()`.
 ```
     DB::table("pacientes")
@@ -231,7 +267,7 @@ Remove um registro do banco de dados com base nas condições passadas no `->whe
         ->delete();
 ```
 
-**_->truncate()_**
+**_->truncate()_** <br>
 Remove todos registros da tabela.
 ```
     DB::table("pacientes")
@@ -240,7 +276,7 @@ Remove todos registros da tabela.
 
 ### MISC
 
-**_->count()_**
+**_->count()_** <br>
 Conta o número de registros encotrados com a condição passada.
 ```
     DB::table("eventos")
@@ -254,7 +290,7 @@ Retorna todos os eventos que estão na tabela
 ```
 Retorna todos eventos que estão com retorno como true
 
-**_->avg()_**
+**_->avg()_** <br>
 Calcula a média com base nos resultados retornados
 ```
     DB::table("eventos")
@@ -267,21 +303,21 @@ Também é possível especificar uma coluna para calcular a média
         ->avg('qtd_atendimentos');
 ```
 
-**_->max()_**
+**_->max()_** <br>
 Busca o maior valor de uma coluna.
 ```
     DB::table("pacientes")
         ->max('qtd_atendimentos');
 ```
 
-**_->min()_**
+**_->min()_** <br>
 Busca o menor valor de uma coluna.
 ```
     DB::table("pacientes")
         ->min('qtd_atendimentos');
 ```
 
-**_->whereNot()_**
+**_->whereNot()_** <br>
 Funciona como `->where()` porém em vez de trazer os resultados que estão com a condição, traz os que não estão.
 ```
     DB::table("eventos")
@@ -296,7 +332,7 @@ Também é possível adicionar o `orWhereNot()` que tem a mesma função sendo u
         ->get();
 ```
 
-**_->whereBetween()_**
+**_->whereBetween()_** <br>
 Retorna todos os resultados que estão entre os valores passados
 ```
     DB::table("eventos")
@@ -306,7 +342,7 @@ Retorna todos os resultados que estão entre os valores passados
 
 Retorna todos pacientes com id entre 1 e 10
 
-**_->whereNotBetween()_**
+**_->whereNotBetween()_** <br>
 Retorna todos os resultados que não estão entre os valores passados
 ```
     DB::table("eventos")
@@ -314,9 +350,9 @@ Retorna todos os resultados que não estão entre os valores passados
         ->get();
 ```
 
-Retorna todos pacientes com id entre 1 e 10
+Retorna todos pacientes que o id não está entre 1 e 10
 
-**_->exists()_**
+**_->exists()_** <br>
 Verifica se existe pelo menos um registro que atenda a condição.
 ```
     if (DB::table("eventos")->where('retorno', true)->orWhere('paciente_id', 2)->exists()) {
@@ -326,7 +362,7 @@ Verifica se existe pelo menos um registro que atenda a condição.
     }
 ```
 
-**_->doesntExist()_**
+**_->doesntExist()_** <br>
 Verifica se existe pelo menos um registro que atenda a condição.
 ```
     if (DB::table("eventos")->where('retorno', true)->orWhere('paciente_id', 2)->doesntexist()) {
