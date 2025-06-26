@@ -370,4 +370,105 @@ Verifica se existe pelo menos um registro que atenda a condição.
     } else {
         return false;
     }
+``` 
+
+**_->chunk()_** <br>
+Quebra uma consulta grande em pedaços menores e processa um pedaço por vez, visando economizar memória. Usando o método chunk() o laravel quebra a consulta com LIMIT e OFFSET e processa um bloco, finalizando ele passa pro próximo, pode ser de extrema valia em consultas com dados muito grandes.
+
+```
+    DB::table("eventos")->where("paciente_id", 3)->get();
+```
+Num cenário onde o paciente com id 3 tem 500mil consultas, pode-se usar o chunk para quebrar essa consulta em blocos de tamanho variado e processar esses blocos individualmente, economizando memória.
+
+```
+    DB::table("eventos")->where("paciente_id", 3)->chunk(1000, function ($eventos) {
+        foreach ($eventos as $evento) {
+            <!-- Permite manipular a variavel $evento -->
+        }
+    });
+```
+
+**_->latest()/->oldest()_** <br>
+Ordenação dos resultados, se não passar nenhum parametro é validado o campo "created_at" para ordenação. <br>
+
+Mais recentes
+```
+    DB::table("eventos")->latest()->get();
+```
+
+Mais antigos
+```
+    DB::table("eventos")->oldest()->get();
+```
+
+### DATABASE TRANSACTIONS
+
+É um bloco de operações executadas como uma única unidade. Se **todas** operações dentro da transação for bem sucedidas, os dados são salvos, caso qualquer uma falhar é tudo revertido. <br>
+
+**Por que usar as transações?** <br>
+Para garantir consistência dos dados em operações críticas, como:
+- Transferência de dinheiro;
+- Criação de registros relacionados (ex: pedido e itens do pedido);
+- Qualquer processo onde várias tabelas ou etapas estejam envolvidas.
+
+**Como usar as transações no laravel?** <br>
+Usando o método `DB::transaction()`. 
+
+```
+    DB::transaction(function () {
+        DB::table("eventos")
+            ->where("paciente_id", "5")
+            ->update(["retorno" => true]);
+        
+        DB::table("pacientes")
+            ->where("paciente_id", 5)
+            ->decrement("atendimentos_realizados", 5);
+    })
+```
+
+**Pessimistic Locking** <br>
+É uma técnica de controle de concorrência usada para bloquear outros processos de ler ou escrever a mesma linha no banco de dados. No laravel é usado os métodos:
+- `lockForUpdate()`
+- `sharedLock()`
+
+**Por que usar o Pessimistic Locking?** <br>
+Caso exista 2 processos (ou usuários) tentando atualizar o mesmo recurso ao mesmo tempo, como o estoque de um produto ou saldo de uma conta.
+
+**_Sem controle:_**
+
+- Os dois leem o valor original (ex: estoque = 10)
+- Ambos fazem alterações simultâneas
+- O valor final pode acabar incorreto (ex: estoque deveria ser 8, mas ficou 9)
+
+**_Com pessimistic locking:_**
+
+- O primeiro processo bloqueia a linha
+- O segundo espera ou falha, evitando conflito
+
+**Como usar o Pessimistic Locking no Laravel?** <br>
+
+**_lockForUpdate()_** <br>
+Impede que outros leiam ou escrevam a mesma linha até que a transação acabe.
+```
+    DB::transaction(function () {
+        DB::table("pacientes")
+            ->where("paciente_id", 5)
+            ->lockForUpdate()
+            ->first();
+        
+        DB::table("pacientes")
+            ->where("paciente_id", 5)
+            ->decrement("atendimentos_realizados", 5);
+    })
+```
+
+**_sharedLock()_** <br>
+Permite leitura por outros, mas bloqueia escrita.
+```
+    DB::transaction(function () {
+        DB::table("pacientes")
+            ->where("paciente_id", 5)
+            ->sharedLock()
+            ->first();
+    })
 ```
