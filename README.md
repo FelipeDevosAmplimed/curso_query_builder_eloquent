@@ -401,6 +401,15 @@ Mais antigos
     DB::table("eventos")->oldest()->get();
 ```
 
+**_->when()_** <br>
+Método usado para condicionar o retorno dos registros
+
+```
+    DB::table("eventos")->when(function($query) {
+        return $query->where('retorno', true)
+    })->get();
+```
+
 ### DATABASE TRANSACTIONS
 
 É um bloco de operações executadas como uma única unidade. Se **todas** operações dentro da transação for bem sucedidas, os dados são salvos, caso qualquer uma falhar é tudo revertido. <br>
@@ -471,4 +480,28 @@ Permite leitura por outros, mas bloqueia escrita.
             ->sharedLock()
             ->first();
     })
+```
+
+### PAGINAÇÃO
+
+**_paginate()_** <br>
+Divide uma grande massa de dados em páginas menores. 
+```->paginate($perPage = null, $columns = ['*'], $pageName = 'page')```
+
+- Primeiro parametro: quantidade por página
+- Segundo parametro: colunas retornadas
+- Terceiro parametro: nome da variável de página
+
+```
+    DB::table("pacientes")
+        ->paginate(5, ['*'], 'pacientes')
+        ->get();
+```
+
+**_simplePaginate()_** <br>
+Divide uma grande massa de dados em páginas menores, mais eficiente que o paginate pois usa menos memória, isso porque o simplePaginate só carrega os dados da página atual, enquanto o paginate carrega todos os dados. Aceita os mesmos parametros do paginate()
+```
+    DB::table("pacientes")
+        ->simplePaginate(5)
+        ->get();
 ```
