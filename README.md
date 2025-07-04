@@ -282,14 +282,14 @@ Realiza a atualização de um ou mais registros no banco de dados. Para que a at
 
 ```php
 // Atualiza o registro com ID 3 na tabela 'eventos'
-DB::table("eventos")->where(\'id\', 3)
+DB::table("eventos")->where('id', 3)
     ->update([
-        \'title\' => \'Titulo teste\',
-        \'paciente_id\' => 1,
-        \'profissional\' => \'Felipe\',
-        \'codproc\' => 2,
-        \'observacoes\' => \'\',
-        \'retorno\' => false,
+        'title' => 'Titulo teste',
+        'paciente_id' => 1,
+        'profissional' => 'Felipe',
+        'codproc' => 2,
+        'observacoes' => '',
+        'retorno' => false,
 ]);
 ```
 
@@ -297,15 +297,15 @@ DB::table("eventos")->where(\'id\', 3)
 
 ```php
 // Atualiza registros com ID 3 OU ID 5 na tabela 'eventos'
-DB::table("eventos")->where(\'id\', 3)
-    ->orWhere(\'id\', 5)
+DB::table("eventos")->where('id', 3)
+    ->orWhere('id', 5)
     ->update([
-        \'title\' => \'Titulo teste\',
-        \'paciente_id\' => 1,
-        \'profissional\' => \'Felipe\',
-        \'codproc\' => 2,
-        \'observacoes\' => \'\',
-        \'retorno\' => false,
+        'title' => 'Titulo teste',
+        'paciente_id' => 1,
+        'profissional' => 'Felipe',
+        'codproc' => 2,
+        'observacoes' => '',
+        'retorno' => false,
 ]);
 ```
 
@@ -315,14 +315,14 @@ Atualiza um registro se ele existir, ou o cria caso contrário. Diferente do `up
 
 ```php
 DB::table("eventos")->updateOrInsert([
-    \'title\' => \'Titulo teste\',
-    \'paciente_id\' => 1,
-    \'profissional\' => \'Felipe\',
-    \'chave_unica\' => \'chave_unica_teste\',
-    \'codproc\' => 2,
-    \'observacoes\' => \'\',
-    \'retorno\' => false,
-], [\'chave_unica\' => \'teste\']);
+    'title' => 'Titulo teste',
+    'paciente_id' => 1,
+    'profissional' => 'Felipe',
+    'chave_unica' => 'chave_unica_teste',
+    'codproc' => 2,
+    'observacoes' => '',
+    'retorno' => false,
+], ['chave_unica' => 'teste']);
 ```
 
 #### `->increment()` / `->decrement()`
@@ -331,8 +331,8 @@ Estes métodos são utilizados para incrementar ou decrementar o valor de uma co
 
 ```php
 // Incrementa o campo 'atendimentos_realizados' em 1 para o paciente com ID 7
-DB::table("pacientes")->where(\'id\', 7)
-    ->increment(\'atendimentos_realizados\', 1);
+DB::table("pacientes")->where('id', 7)
+    ->increment('atendimentos_realizados', 1);
 ```
 
 O primeiro parâmetro é o nome da coluna a ser alterada, e o segundo é o valor a ser incrementado ou decrementado.
@@ -341,8 +341,8 @@ O primeiro parâmetro é o nome da coluna a ser alterada, e o segundo é o valor
 
 ```php
 // Incrementa 'atendimentos_realizados' e 'mensagens_enviadas' em 1 para o paciente com ID 7
-DB::table("pacientes")->where(\'id\', 7)
-    ->incrementEach([\'atendimentos_realizados\', \'mensagens_enviadas\'], 1);
+DB::table("pacientes")->where('id', 7)
+    ->incrementEach(['atendimentos_realizados', 'mensagens_enviadas'], 1);
 ```
 
 ### Métodos de Exclusão (DELETE)
@@ -356,8 +356,8 @@ Remove um ou mais registros do banco de dados com base nas condições especific
 ```php
 // Remove o paciente com ID 7 E nome 'Felipe'
 DB::table("pacientes")
-    ->where(\'id\', 7)
-    ->where(\'nome\', \'Felipe\')
+    ->where('id', 7)
+    ->where('nome', 'Felipe')
     ->delete();
 ```
 
@@ -386,7 +386,7 @@ DB::table("eventos")
 
 // Conta eventos onde 'retorno' é verdadeiro
 DB::table("eventos")
-    ->where(\'retorno\', true)
+    ->where('retorno', true)
     ->count();
 ```
 
@@ -397,12 +397,12 @@ Calcula a média de uma coluna numérica com base nos resultados retornados. Pod
 ```php
 // Calcula a média de uma coluna padrão para eventos do profissional 'Felipe'
 DB::table("eventos")
-    ->where(\'profissional\', \'Felipe\')
+    ->where('profissional', 'Felipe')
     ->avg();
 
 // Calcula a média da coluna 'qtd_atendimentos' para pacientes
 DB::table("pacientes")
-    ->avg(\'qtd_atendimentos\');
+    ->avg('qtd_atendimentos');
 ```
 
 #### `->max()`
@@ -412,7 +412,7 @@ Busca o maior valor de uma coluna específica.
 ```php
 // Busca o maior valor da coluna 'qtd_atendimentos' para pacientes
 DB::table("pacientes")
-    ->max(\'qtd_atendimentos\');
+    ->max('qtd_atendimentos');
 ```
 
 #### `->min()`
@@ -422,7 +422,7 @@ Busca o menor valor de uma coluna específica.
 ```php
 // Busca o menor valor da coluna 'qtd_atendimentos' para pacientes
 DB::table("pacientes")
-    ->min(\'qtd_atendimentos\');
+    ->min('qtd_atendimentos');
 ```
 
 #### `->whereNot()`
@@ -432,7 +432,7 @@ Funciona de forma similar ao `->where()`, mas retorna os registros que *não* sa
 ```php
 // Retorna eventos onde 'retorno' NÃO é verdadeiro
 DB::table("eventos")
-    ->whereNot(\'retorno\', true)
+    ->whereNot('retorno', true)
     ->get();
 ```
 
@@ -443,13 +443,13 @@ OR que *não* satisfaz a condição:
 
 ```php
 // Retorna eventos onde (
-//   (\'retorno\' é verdadeiro)
+//   ('retorno' é verdadeiro)
 //   OU
-//   (\'paciente_id\' NÃO é 2)
+//   ('paciente_id' NÃO é 2)
 // )
 DB::table("eventos")
-    ->where(\'retorno\', true)
-    ->orWhereNot(\'paciente_id\', 2)
+    ->where('retorno', true)
+    ->orWhereNot('paciente_id', 2)
     ->get();
 ```
 
@@ -458,9 +458,9 @@ DB::table("eventos")
 Retorna todos os registros onde o valor de uma coluna está entre dois valores especificados (inclusive).
 
 ```php
-// Retorna eventos onde \'paciente_id\' está entre 1 e 10
+// Retorna eventos onde 'paciente_id' está entre 1 e 10
 DB::table("eventos")
-    ->whereBetween(\'paciente_id\', [1, 10])
+    ->whereBetween('paciente_id', [1, 10])
     ->get();
 ```
 
@@ -469,9 +469,9 @@ DB::table("eventos")
 Retorna todos os registros onde o valor de uma coluna *não* está entre dois valores especificados.
 
 ```php
-// Retorna eventos onde \'paciente_id\' NÃO está entre 1 e 10
+// Retorna eventos onde 'paciente_id' NÃO está entre 1 e 10
 DB::table("eventos")
-    ->whereNotBetween(\'paciente_id\', [1, 10])
+    ->whereNotBetween('paciente_id', [1, 10])
     ->get();
 ```
 
@@ -480,7 +480,7 @@ DB::table("eventos")
 Verifica se existe pelo menos um registro que atenda à condição especificada, retornando `true` ou `false`.
 
 ```php
-if (DB::table("eventos")->where(\'retorno\', true)->orWhere(\'paciente_id\', 2)->exists()) {
+if (DB::table("eventos")->where('retorno', true)->orWhere('paciente_id', 2)->exists()) {
     return true;
 } else {
     return false;
@@ -492,7 +492,7 @@ if (DB::table("eventos")->where(\'retorno\', true)->orWhere(\'paciente_id\', 2)-
 Verifica se *não* existe nenhum registro que atenda à condição especificada, retornando `true` ou `false`.
 
 ```php
-if (DB::table("eventos")->where(\'retorno\', true)->orWhere(\'paciente_id\', 2)->doesntExist()) {
+if (DB::table("eventos")->where('retorno', true)->orWhere('paciente_id', 2)->doesntExist()) {
     return true;
 } else {
     return false;
@@ -538,7 +538,7 @@ Permite aplicar condições à consulta de forma condicional. A função de call
 
 ```php
 DB::table("eventos")->when(function($query) {
-    return $query->where(\'retorno\', true);
+    return $query->where('retorno', true);
 })->get();
 ```
 
@@ -624,7 +624,7 @@ Paginação é o processo de dividir uma grande massa de dados em páginas menor
 Divide os resultados da consulta em páginas. Este método é mais completo, pois além de retornar os dados da página atual, também fornece informações sobre o total de registros, o número da última página, etc., o que é útil para construir links de paginação completos.
 
 ```php
-->paginate($perPage = null, $columns = [\'*\'], $pageName = \'page\')
+->paginate($perPage = null, $columns = ['*'], $pageName = 'page')
 ```
 
 -   **Primeiro parâmetro**: `perPage` (opcional) - Quantidade de registros por página. Se `null`, o Laravel usa um valor padrão.
@@ -632,10 +632,10 @@ Divide os resultados da consulta em páginas. Este método é mais completo, poi
 -   **Terceiro parâmetro**: `pageName` (opcional) - Nome da variável de query string usada para indicar o número da página (ex: `?page=2`). O padrão é `'page'`.
 
 ```php
-// Pagina a tabela \'pacientes\' com 5 registros por página, retornando todas as colunas
-// e usando \'pacientes\' como nome da variável de página na URL.
+// Pagina a tabela 'pacientes' com 5 registros por página, retornando todas as colunas
+// e usando 'pacientes' como nome da variável de página na URL.
 DB::table("pacientes")
-    ->paginate(5, [\'*\'], \'pacientes\')
+    ->paginate(5, ['*'], 'pacientes')
     ->get();
 ```
 
@@ -647,7 +647,7 @@ Uma alternativa mais eficiente ao `paginate()` para casos onde você precisa ape
 de "Próximo" e "Anterior". Ele é mais leve porque não conta o total de registros, economizando uma consulta extra ao banco de dados. Aceita os mesmos parâmetros do `paginate()`.
 
 ```php
-// Pagina a tabela \'pacientes\' com 5 registros por página, usando simplePaginate
+// Pagina a tabela 'pacientes' com 5 registros por página, usando simplePaginate
 DB::table("pacientes")
     ->simplePaginate(5)
     ->get();
